@@ -348,6 +348,45 @@
             opacity: 1;
         }
 
+        /* Στυλ για την οθόνη τέλους */
+        .end-page-phrase {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            transition: all 0.5s ease;
+            word-spacing: 0.2em;
+            line-height: 1.6;
+            font-size: 0.9rem;
+            color: white;
+            text-align: left;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .end-page-phrase {
+                padding: 1.5rem;
+                margin: 1.5rem 0;
+                line-height: 1.7;
+                font-size: 1rem;
+            }
+        }
+        
+        .end-page-title {
+            font-weight: bold;
+            color: #fbbf24;
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .end-page-content {
+            color: #e5e7eb;
+            line-height: 1.6;
+        }
+
         /* Βελτιστοποιήσεις για μικρές οθόνες */
         @media (max-width: 380px) {
             .letter-button {
@@ -361,6 +400,10 @@
                 font-size: 0.9rem;
                 min-height: 100px;
             }
+        }
+
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
@@ -474,10 +517,37 @@
                         <button id="final-no" class="px-4 py-2 md:px-6 md:py-2 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-700 transition text-sm md:text-base">Όχι</button>
                     </div>
                 </div>
+                <!-- Κουμπιά για την ήττα -->
+                <div id="lose-buttons" class="hidden space-y-3 md:space-y-4">
+                    <p class="text-base md:text-lg font-semibold text-gray-700">Τι θέλεις να κάνεις τώρα;</p>
+                    <div class="flex flex-col space-y-2 md:space-y-3">
+                        <button id="play-same-again" class="px-4 py-2 md:px-6 md:py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition text-sm md:text-base">
+                            Παίξε Ξανά (Ίδιο Κρυπτόλεξο)
+                        </button>
+                        <button id="continue-next" class="px-4 py-2 md:px-6 md:py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition text-sm md:text-base">
+                            Συνέχισε στο Επόμενο
+                        </button>
+                        <button id="show-end" class="px-4 py-2 md:px-6 md:py-2 bg-purple-600 text-white font-semibold rounded-lg shadow-md hover:bg-purple-700 transition text-sm md:text-base">
+                            Τέλος Παιχνιδιού
+                        </button>
+                    </div>
+                </div>
                 <!-- Κουμπί για επανεκκίνηση -->
                 <button id="modal-button" class="px-4 py-2 md:px-6 md:py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition hidden text-sm md:text-base">Παίξε Ξανά</button>
             </div>
         </div>
+    </div>
+
+    <!-- Οθόνη Τελικού -->
+    <div id="end-page" class="intro-page hidden">
+        <div class="intro-content">
+            <h1 id="end-title-1" class="intro-title">Μάθε τα Μυστικά της ζωής στο Κάστρο Καλλιθέας</h1>
+            <div id="end-phrases-container" class="w-full max-w-4xl">
+                <!-- Τα κρυπτόλεξα θα προστεθούν δυναμικά εδώ -->
+            </div>
+            <p id="end-thank-you" class="intro-subtitle mt-8">Ευχαριστούμε που έπαιξες</p>
+        </div>
+        <button id="end-play-again" class="skip-button">Παίξε Ξανά</button>
     </div>
 
     <script>
@@ -544,6 +614,19 @@
         const solvedPhrasesContainer = document.getElementById('solved-phrases-container');
         const emptyPuzzleSpace = document.getElementById('empty-puzzle-space');
         const skipIntroButton = document.getElementById('skip-intro');
+
+        // Νέα DOM Elements για την οθόνη τέλους
+        const endPage = document.getElementById('end-page');
+        const endPhrasesContainer = document.getElementById('end-phrases-container');
+        const endTitle1 = document.getElementById('end-title-1');
+        const endThankYou = document.getElementById('end-thank-you');
+        const endPlayAgain = document.getElementById('end-play-again');
+
+        // Νέα DOM Elements για τα κουμπιά στην ήττα
+        const loseButtons = document.getElementById('lose-buttons');
+        const playSameAgain = document.getElementById('play-same-again');
+        const continueNext = document.getElementById('continue-next');
+        const showEnd = document.getElementById('show-end');
 
         // --- Intro Functions ---
         function startIntro() {
@@ -655,6 +738,132 @@
                     resolve(solvedElement);
                 }, 1500);
             });
+        }
+
+        // --- Βοηθητική Συνάρτηση για Έλεγχο Εμφανίσεων Γραμμάτων ---
+        function countLetterOccurrences(letter) {
+            let count = 0;
+            for (let i = 0; i < gameState.normalizedMessage.length; i++) {
+                if (gameState.normalizedMessage[i] === letter) {
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        function countRevealedOccurrences(letter) {
+            let count = 0;
+            for (let i = 0; i < gameState.hiddenPhrase.length; i++) {
+                if (gameState.normalizedMessage[i] === letter && gameState.hiddenPhrase[i] !== '_') {
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        // --- Νέα Συνάρτηση για Αποκάλυψη Τυχαίων Γραμμάτων ---
+        function revealRandomLetters(count = 10) {
+            // Βρίσκουμε όλες τις θέσεις που είναι '_' (δηλαδή κενές)
+            const emptyPositions = [];
+            for (let i = 0; i < gameState.hiddenPhrase.length; i++) {
+                if (gameState.hiddenPhrase[i] === '_' && ALPHABET_GREEK.includes(gameState.normalizedMessage[i])) {
+                    emptyPositions.push(i);
+                }
+            }
+
+            // Αν υπάρχουν λιγότερες κενές θέσεις από το count, χρησιμοποιούμε όλες
+            const positionsToReveal = emptyPositions.length <= count ? 
+                emptyPositions : 
+                shuffleArray(emptyPositions).slice(0, count);
+
+            // Αποκαλύπτουμε τα γράμματα στις επιλεγμένες θέσεις
+            let newHiddenPhrase = gameState.hiddenPhrase.split('');
+            positionsToReveal.forEach(position => {
+                newHiddenPhrase[position] = gameState.normalizedMessage[position];
+            });
+
+            gameState.hiddenPhrase = newHiddenPhrase.join('');
+
+            // Τώρα ελέγχουμε για κάθε μοναδικό γράμμα που αποκαλύφθηκε αν είναι μοναδικό στο κρυπτόλεξο
+            const revealedLetters = new Set();
+            positionsToReveal.forEach(position => {
+                const letter = gameState.normalizedMessage[position];
+                revealedLetters.add(letter);
+            });
+
+            // Για κάθε γράμμα που αποκαλύφθηκε, ελέγχουμε αν όλες οι εμφανίσεις του έχουν αποκαλυφθεί
+            revealedLetters.forEach(letter => {
+                const totalOccurrences = countLetterOccurrences(letter);
+                const revealedOccurrences = countRevealedOccurrences(letter);
+                
+                // Αν όλες οι εμφανίσεις του γράμματος έχουν αποκαλυφθεί, τότε το αφαιρούμε από τα διαθέσιμα
+                if (totalOccurrences === revealedOccurrences) {
+                    const index = gameState.wordsToGuess.indexOf(letter);
+                    if (index > -1) {
+                        gameState.wordsToGuess.splice(index, 1);
+                    }
+                    gameState.correctGuesses.add(letter);
+                }
+            });
+        }
+
+        // Βοηθητική συνάρτηση για ανακατέματo array (Fisher-Yates shuffle)
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        // --- Νέα Συνάρτηση για Οθόνη Τελικού ---
+        function showEndPage() {
+            // Απόκρυψη του παιχνιδιού και εμφάνιση της οθόνης τέλους
+            gameContainer.classList.add('hidden');
+            gameModal.classList.add('hidden');
+            endPage.classList.remove('hidden');
+            endPage.style.display = 'flex';
+
+            // Καθαρισμός προηγούμενου περιεχομένου
+            endPhrasesContainer.innerHTML = '';
+
+            // Προσθήκη του τίτλου
+            endTitle1.classList.remove('fade-in');
+            setTimeout(() => {
+                endTitle1.classList.add('fade-in');
+            }, 100);
+
+            // Προσθήκη των κρυπτόλεξων με animation
+            let delay = 800;
+            solvedPhrases.forEach((solved, index) => {
+                setTimeout(() => {
+                    const phraseDiv = document.createElement('div');
+                    phraseDiv.className = 'end-page-phrase';
+                    phraseDiv.style.opacity = '0';
+                    phraseDiv.innerHTML = `
+                        <div class="end-page-title">${solved.title}</div>
+                        <div class="end-page-content">${solved.phrase}</div>
+                    `;
+                    endPhrasesContainer.appendChild(phraseDiv);
+                    
+                    // Fade in animation
+                    setTimeout(() => {
+                        phraseDiv.style.transition = 'opacity 1s ease-in-out';
+                        phraseDiv.style.opacity = '1';
+                    }, 50);
+                }, delay);
+                delay += 800;
+            });
+
+            // Προσθήκη του μηνύματος ευχαριστιών
+            setTimeout(() => {
+                endThankYou.style.opacity = '0';
+                endThankYou.classList.remove('fade-in');
+                setTimeout(() => {
+                    endThankYou.classList.add('fade-in');
+                }, 100);
+            }, delay + 300);
         }
 
         // --- Core UI Rendering ---
@@ -834,6 +1043,7 @@
             revealedPhrase.classList.add('hidden');
             continueButtons.classList.add('hidden');
             finalButtons.classList.add('hidden');
+            loseButtons.classList.add('hidden');
             modalButton.classList.add('hidden');
 
             if (isWin) {
@@ -869,10 +1079,7 @@
                 modalTitle.textContent = 'Τέλος Παιχνιδιού! Ήττα!';
                 modalMessage.innerHTML = `Ξεπέρασες τα ${MAX_INCORRECT_GUESSES} λάθη.`;
                 revealPhraseBtn.classList.remove('hidden');
-                modalButton.classList.remove('hidden');
-                modalButton.textContent = 'Παίξε Ξανά';
-                // Στην περίπτωση ήττας, επανεκκίνηση από το ΤΡΕΧΟΝ κρυπτόλεξο
-                modalButton.onclick = () => resetGame(gameState.currentPuzzleIndex);
+                loseButtons.classList.remove('hidden');
                 gameModal.classList.remove('hidden');
                 gameModal.classList.add('flex');
             }
@@ -1046,6 +1253,9 @@
                 initialRevealsLeft: 5,
                 selectedLetter: null,
             };
+
+            // Αποκάλυψη 10 τυχαίων γραμμάτων πριν την έναρξη του παιχνιδιού
+            revealRandomLetters(10);
             
             puzzleTitle.textContent = currentPuzzle.title;
             puzzleImage.src = currentPuzzle.image;
@@ -1059,7 +1269,12 @@
             revealedPhrase.classList.add('hidden');
             continueButtons.classList.add('hidden');
             finalButtons.classList.add('hidden');
+            loseButtons.classList.add('hidden');
             modalButton.classList.add('hidden');
+            
+            // Απόκρυψη της οθόνης τέλους και εμφάνιση του παιχνιδιού
+            endPage.classList.add('hidden');
+            gameContainer.classList.remove('hidden');
             
             renderPhrase();
             renderLetters();
@@ -1091,13 +1306,7 @@
             };
             
             continueNo.onclick = () => {
-                modalTitle.textContent = 'Σε ευχαριστώ που έπαιξες Κρυπτόλεξο!';
-                modalMessage.textContent = '';
-                continueButtons.classList.add('hidden');
-                modalButton.classList.remove('hidden');
-                modalButton.textContent = 'Παίξε Ξανά';
-                // Επανεκκίνηση από το πρώτο κρυπτόλεξο
-                modalButton.onclick = () => resetGame(0);
+                showEndPage();
             };
 
             finalYes.onclick = () => {
@@ -1107,13 +1316,30 @@
             };
 
             finalNo.onclick = () => {
-                modalTitle.textContent = 'Σε ευχαριστώ που έπαιξες Κρυπτόλεξο!';
-                modalMessage.textContent = 'Ελπίζουμε να σου άρεσε η εμπειρία!';
-                finalButtons.classList.add('hidden');
-                modalButton.classList.remove('hidden');
-                modalButton.textContent = 'Παίξε Ξανά';
-                // Επανεκκίνηση από το πρώτο κρυπτόλεξο
-                modalButton.onclick = () => resetGame(0);
+                showEndPage();
+            };
+
+            // Event listeners για τα νέα κουμπιά στην ήττα
+            playSameAgain.onclick = () => {
+                resetGame(gameState.currentPuzzleIndex);
+            };
+
+            continueNext.onclick = () => {
+                const nextPuzzleIndex = gameState.currentPuzzleIndex + 1;
+                if (nextPuzzleIndex < PUZZLES.length) {
+                    resetGame(nextPuzzleIndex);
+                } else {
+                    showEndPage();
+                }
+            };
+
+            showEnd.onclick = () => {
+                showEndPage();
+            };
+
+            // Event listener για το κουμπί "Παίξε Ξανά" στην οθόνη τέλους
+            endPlayAgain.onclick = () => {
+                resetGame(0);
             };
             
             // Έναρξη της intro
