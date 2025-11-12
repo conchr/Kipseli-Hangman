@@ -8,12 +8,15 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        
+        /* Βασικά στυλ */
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f3f4f6;
             color: #1f2937;
             min-height: 100vh;
             padding: 10px;
+            margin: 0;
         }
 
         @media (min-width: 768px) {
@@ -25,6 +28,7 @@
             }
         }
 
+        /* Κάρτα παιχνιδιού */
         .card {
             background-color: white;
             padding: 1rem;
@@ -41,6 +45,86 @@
             }
         }
 
+        /* Εισαγωγική σελίδα */
+        .intro-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .intro-content {
+            text-align: center;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .intro-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        .intro-subtitle {
+            font-size: 1.3rem;
+            color: white;
+            margin-bottom: 1.2rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        @media (min-width: 768px) {
+            .intro-title {
+                font-size: 3rem;
+            }
+            .intro-subtitle {
+                font-size: 1.5rem;
+            }
+        }
+
+        .skip-button {
+            position: absolute;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 0.7rem 1.5rem;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            border-radius: 2rem;
+            cursor: pointer;
+            font-weight: bold;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .skip-button:hover {
+            background-color: white;
+            color: #667eea;
+        }
+
+        .fade-in {
+            opacity: 1 !important;
+        }
+
+        .fade-out {
+            opacity: 0 !important;
+            transition: opacity 1s ease-in-out !important;
+        }
+
+        /* Στυλ παιχνιδιού */
         #hidden-phrase-container {
             min-height: 120px;
             font-family: monospace;
@@ -65,12 +149,6 @@
                 font-size: 1.3rem;
                 min-height: 150px;
                 line-height: 2.2;
-            }
-        }
-
-        @media (min-width: 1024px) {
-            #hidden-phrase-container {
-                font-size: 1.4rem;
             }
         }
 
@@ -146,13 +224,6 @@
             }
         }
 
-        @media (min-width: 768px) {
-            .letter-button {
-                min-width: 48px;
-                height: 48px;
-            }
-        }
-
         .btn-available {
             background-color: #4f46e5;
             color: white;
@@ -171,13 +242,19 @@
             cursor: not-allowed;
             opacity: 0.7;
         }
+        /* Νέο στυλ για λάθος τοποθετήσεις που παραμένουν ενεργά */
+        .btn-used-wrong-active {
+            background-color: #fecaca;
+            color: #991b1b;
+            border: 2px solid #fca5a5;
+        }
         .btn-used-wrong {
             background-color: #fca5a5;
             color: #991b1b;
             cursor: not-allowed;
             opacity: 0.7;
-            text-decoration: line-through;
         }
+        
         .modal {
             position: fixed;
             top: 0;
@@ -235,12 +312,6 @@
             margin-bottom: 0.5rem;
         }
 
-        @media (min-width: 768px) {
-            .solved-title {
-                font-size: 1.2rem;
-            }
-        }
-
         .empty-puzzle-space {
             min-height: 150px;
             display: flex;
@@ -252,45 +323,32 @@
             padding: 1rem;
         }
 
-        @media (min-width: 768px) {
-            .empty-puzzle-space {
-                min-height: 200px;
-            }
-        }
-        
         .no-word-break {
             white-space: nowrap;
         }
 
-        .typewriter {
-            font-family: 'Courier New', monospace;
-            border-top: 2px solid #1f2937;
-            padding-top: 1rem;
-            margin-top: 1.5rem;
-            text-align: center;
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #1f2937;
+        .selection-display-container {
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        @media (min-width: 768px) {
-            .typewriter {
-                font-size: 1.4rem;
-                margin-top: 2rem;
-            }
+        .selection-display {
+            transition: all 0.3s ease;
         }
 
-        .final-buttons {
-            margin-top: 1rem;
+        .selection-display.invisible {
+            visibility: hidden;
+            opacity: 0;
         }
 
-        @media (min-width: 768px) {
-            .final-buttons {
-                margin-top: 1.5rem;
-            }
+        .selection-display.visible {
+            visibility: visible;
+            opacity: 1;
         }
 
-        /* Βελτιστοποίηση για πολύ μικρές οθόνες */
+        /* Βελτιστοποιήσεις για μικρές οθόνες */
         @media (max-width: 380px) {
             .letter-button {
                 padding: 4px 8px;
@@ -303,158 +361,122 @@
                 font-size: 0.9rem;
                 min-height: 100px;
             }
-            
-            .card {
-                padding: 0.75rem;
-            }
-        }
-
-        /* Βελτιστοποίηση για landscape σε κινητά */
-        @media (max-height: 600px) and (orientation: landscape) {
-            body {
-                padding: 5px;
-                display: block;
-            }
-            
-            .card {
-                padding: 0.5rem;
-                max-width: 100%;
-            }
-            
-            #hidden-phrase-container {
-                min-height: 80px;
-                font-size: 0.9rem;
-                line-height: 1.6;
-            }
-            
-            .letter-button {
-                padding: 4px 8px;
-                font-size: 0.85rem;
-                min-width: 38px;
-                height: 38px;
-            }
-            
-            .solved-phrase {
-                padding: 0.5rem;
-                margin: 0.5rem 0;
-                font-size: 0.85rem;
-            }
-            
-            .empty-puzzle-space {
-                min-height: 100px;
-            }
-        }
-
-        /* Βελτιστοποίηση για tablet landscape */
-        @media (min-width: 1024px) and (orientation: landscape) and (max-height: 800px) {
-            #hidden-phrase-container {
-                min-height: 120px;
-                font-size: 1.2rem;
-            }
-            
-            .card {
-                padding: 1.5rem;
-            }
         }
     </style>
 </head>
 <body>
-
-    <div class="card space-y-4 md:space-y-6">
-        <header class="text-center border-b pb-3 md:pb-4">
-            <h1 class="text-xl md:text-2xl lg:text-3xl font-extrabold text-[#4f46e5]">Μάθε τα Μυστικά της ζωής στο Κάστρο Καλλιθέας</h1>
-            <p class="text-gray-600 mt-1 text-sm md:text-base">Βρες τα γράμματα της κρυμμένης φράσης! Επιτρέπονται 3 λάθη.</p>
-        </header>
-
-        <!-- Error/Status Display -->
-        <div class="flex justify-between items-center p-2 md:p-3 rounded-lg bg-red-50 border border-red-200">
-            <p class="text-base md:text-lg font-semibold text-gray-700">
-                Λάθος: <span id="incorrect-guesses" class="text-red-600 text-xl md:text-2xl font-bold">0</span> / 3
-            </p>
-            <p id="game-status" class="text-lg md:text-xl font-bold text-blue-600">Παίζεις...</p>
+    <!-- Εισαγωγική Σελίδα -->
+    <div id="intro-page" class="intro-page">
+        <div class="intro-content">
+            <h1 id="intro-title-1" class="intro-title">Μάθε τα Μυστικά της ζωής στο Κάστρο Καλλιθέας</h1>
+            <p id="intro-title-2" class="intro-subtitle">Ανακάλυψε τη φράση, διάλεξε πρώτα 5 γράμματα</p>
+            <p id="intro-title-3" class="intro-subtitle">Επιλέγεις πρώτα ένα γράμμα, και μετά την θέση που ταιριάζει στο κρυπτόλεξο</p>
+            <p id="intro-title-4" class="intro-subtitle">Πρόσεξε, μπορείς να κάνεις μέχρι 3 λάθη!</p>
+            <p id="intro-title-5" class="intro-subtitle">Είσαι Ετοιμος?</p>
         </div>
-        
-        <!-- SUBTITLE/CLUE -->
-        <p class="text-lg md:text-xl font-bold text-gray-800 border-b pb-2" id="puzzle-title">
-            <!-- Θα γεμίζει δυναμικά -->
-        </p>
-
-        <!-- Image insertion below the clue -->
-        <div class="flex justify-center p-3 md:p-4">
-            <img 
-                id="puzzle-image"
-                alt="Εικόνα Κρυπτόλεξου" 
-                class="rounded-lg shadow-xl w-full max-w-[280px] md:max-w-xs h-auto border-4 border-gray-200 transition-all duration-300 transform hover:scale-105"
-                onerror="this.onerror=null; this.src='https://placehold.co/300x200/4f46e5/ffffff?text=Δεν+βρέθηκε+εικόνα';"
-            >
-        </div>
-
-        <!-- Εδώ θα εμφανίζονται οι λυμένες φράσεις -->
-        <div id="solved-phrases-container">
-            <!-- Θα προστεθούν δυναμικά -->
-        </div>
-
-        <!-- Κενός χώρος που θα μείνει όταν αφαιρεθεί το κρυπτόλεξο -->
-        <div id="empty-puzzle-space" class="empty-puzzle-space hidden">
-            Το κρυπτόλεξο ολοκληρώθηκε και μεταφέρθηκε παραπάνω!
-        </div>
-
-        <!-- Game Phase Indicator -->
-        <div id="phase-indicator" class="p-2 md:p-3 rounded-lg bg-blue-100 border border-blue-300 text-center font-bold text-blue-800 text-sm md:text-base">
-            Φάση: <span id="current-phase-text"></span>
-        </div>
-
-        <!-- Letter Selection Status (Visible only in Main Game loop) -->
-        <div id="selection-display" class="p-2 md:p-3 rounded-lg bg-yellow-100 border border-yellow-300 text-center font-bold text-yellow-800 hidden text-sm md:text-base">
-            Επιλεγμένο Γράμμα: <span id="selected-letter-text" class="text-xl md:text-2xl font-extrabold text-yellow-900">Κανένα</span>. Πατήστε ένα _ για τοποθέτηση.
-        </div>
-
-        <!-- Display Area -->
-        <div id="text-container" class="p-3 md:p-4 rounded-lg bg-gray-50 border border-gray-200 transition-all duration-300">
-            <div id="hidden-phrase-container" class="text-gray-900">
-                <!-- Phrase elements will be inserted here -->
-            </div>
-        </div>
-
-        <!-- Letter Controls -->
-        <div class="space-y-3 md:space-y-4 pt-3 md:pt-4 border-t">
-            <h2 class="text-lg md:text-xl font-bold text-gray-700">Διαθέσιμα Γράμματα:</h2>
-            <div id="letter-buttons" class="flex flex-wrap gap-1 md:gap-2 justify-center p-1 md:p-2 bg-gray-100 rounded-lg shadow-inner">
-                <!-- Letter buttons will be generated here -->
-            </div>
-        </div>
+        <button id="skip-intro" class="skip-button">Skip</button>
     </div>
 
-    <!-- Modal for Game Over/Win -->
-    <div id="game-modal" class="modal hidden">
-        <div class="bg-white p-4 md:p-6 lg:p-8 rounded-xl shadow-2xl text-center w-full max-w-xs md:max-w-sm lg:max-w-md mx-2">
-            <h3 id="modal-title" class="text-2xl md:text-3xl font-extrabold mb-3 md:mb-4 text-[#4f46e5]"></h3>
-            <p id="modal-message" class="text-gray-700 mb-4 md:mb-6 text-base md:text-lg"></p>
-            <!-- Κουμπί για εμφάνιση φράσης στην ήττα -->
-            <button id="reveal-phrase-btn" class="px-4 py-2 md:px-6 md:py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition mb-3 md:mb-4 hidden text-sm md:text-base">
-                Θέλεις να δεις το κρυπτόλεξο;
-            </button>
-            <div id="revealed-phrase" class="hidden mt-3 md:mt-4 p-3 md:p-4 bg-gray-100 rounded-lg">
-                <p class="font-bold text-base md:text-lg text-gray-900"></p>
+    <!-- Κύρια Σελίδα Παιχνιδιού -->
+    <div id="game-container" class="hidden">
+        <div class="card space-y-4 md:space-y-6">
+            <header class="text-center border-b pb-3 md:pb-4">
+                <h1 class="text-xl md:text-2xl lg:text-3xl font-extrabold text-[#4f46e5]">Μάθε τα Μυστικά της ζωής στο Κάστρο Καλλιθέας</h1>
+                <p class="text-gray-600 mt-1 text-sm md:text-base">Βρες τα γράμματα της κρυμμένης φράσης! Επιτρέπονται 3 λάθη.</p>
+            </header>
+
+            <!-- Error/Status Display -->
+            <div class="flex justify-between items-center p-2 md:p-3 rounded-lg bg-red-50 border border-red-200">
+                <p class="text-base md:text-lg font-semibold text-gray-700">
+                    Λάθος: <span id="incorrect-guesses" class="text-red-600 text-xl md:text-2xl font-bold">0</span> / 3
+                </p>
+                <p id="game-status" class="text-lg md:text-xl font-bold text-blue-600">Παίζεις...</p>
             </div>
-            <!-- Κουμπιά για συνέχεια μετά τη νίκη -->
-            <div id="continue-buttons" class="hidden space-y-3 md:space-y-4">
-                <p class="text-base md:text-lg font-semibold text-gray-700">Θέλεις να συνεχίσεις;</p>
-                <div class="flex justify-center space-x-3 md:space-x-4">
-                    <button id="continue-yes" class="px-4 py-2 md:px-6 md:py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition text-sm md:text-base">Ναι</button>
-                    <button id="continue-no" class="px-4 py-2 md:px-6 md:py-2 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-700 transition text-sm md:text-base">Όχι</button>
+            
+            <!-- SUBTITLE/CLUE -->
+            <p class="text-lg md:text-xl font-bold text-gray-800 border-b pb-2" id="puzzle-title">
+                <!-- Θα γεμίζει δυναμικά -->
+            </p>
+
+            <!-- Image insertion below the clue -->
+            <div class="flex justify-center p-3 md:p-4">
+                <img 
+                    id="puzzle-image"
+                    alt="Εικόνα Κρυπτόλεξου" 
+                    class="rounded-lg shadow-xl w-full max-w-[280px] md:max-w-xs h-auto border-4 border-gray-200 transition-all duration-300 transform hover:scale-105"
+                    onerror="this.onerror=null; this.src='https://placehold.co/300x200/4f46e5/ffffff?text=Δεν+βρέθηκε+εικόνα';"
+                >
+            </div>
+
+            <!-- Εδώ θα εμφανίζονται οι λυμένες φράσεις -->
+            <div id="solved-phrases-container">
+                <!-- Θα προστεθούν δυναμικά -->
+            </div>
+
+            <!-- Κενός χώρος που θα μείνει όταν αφαιρεθεί το κρυπτόλεξο -->
+            <div id="empty-puzzle-space" class="empty-puzzle-space hidden">
+                Το κρυπτόλεξο ολοκληρώθηκε και μεταφέρθηκε παραπάνω!
+            </div>
+
+            <!-- Game Phase Indicator -->
+            <div id="phase-indicator" class="p-2 md:p-3 rounded-lg bg-blue-100 border border-blue-300 text-center font-bold text-blue-800 text-sm md:text-base">
+                Φάση: <span id="current-phase-text"></span>
+            </div>
+
+            <!-- Letter Selection Status Container με σταθερό ύψος -->
+            <div class="selection-display-container">
+                <div id="selection-display" class="selection-display invisible p-2 md:p-3 rounded-lg bg-yellow-100 border border-yellow-300 text-center font-bold text-yellow-800 text-sm md:text-base w-full">
+                    Επιλεγμένο Γράμμα: <span id="selected-letter-text" class="text-xl md:text-2xl font-extrabold text-yellow-900">Κανένα</span>. Πατήστε ένα _ για τοποθέτηση.
                 </div>
             </div>
-            <!-- Κουμπιά για το τρίτο επίπεδο -->
-            <div id="final-buttons" class="hidden space-y-3 md:space-y-4">
-                <p class="text-base md:text-lg font-semibold text-gray-700">Συγχαρητήρια! Θέλεις να πάμε σε κρυπτόλεξα με διαφορετικό θέμα?</p>
-                <div class="flex justify-center space-x-3 md:space-x-4">
-                    <button id="final-yes" class="px-4 py-2 md:px-6 md:py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition text-sm md:text-base">Ναι</button>
-                    <button id="final-no" class="px-4 py-2 md:px-6 md:py-2 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-700 transition text-sm md:text-base">Όχι</button>
+
+            <!-- Display Area -->
+            <div id="text-container" class="p-3 md:p-4 rounded-lg bg-gray-50 border border-gray-200 transition-all duration-300">
+                <div id="hidden-phrase-container" class="text-gray-900">
+                    <!-- Phrase elements will be inserted here -->
                 </div>
             </div>
-            <!-- Κουμπί για επανεκκίνηση -->
-            <button id="modal-button" class="px-4 py-2 md:px-6 md:py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition hidden text-sm md:text-base">Παίξε Ξανά</button>
+
+            <!-- Letter Controls -->
+            <div class="space-y-3 md:space-y-4 pt-3 md:pt-4 border-t">
+                <h2 class="text-lg md:text-xl font-bold text-gray-700">Διαθέσιμα Γράμματα:</h2>
+                <div id="letter-buttons" class="flex flex-wrap gap-1 md:gap-2 justify-center p-1 md:p-2 bg-gray-100 rounded-lg shadow-inner">
+                    <!-- Letter buttons will be generated here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for Game Over/Win -->
+        <div id="game-modal" class="modal hidden">
+            <div class="bg-white p-4 md:p-6 lg:p-8 rounded-xl shadow-2xl text-center w-full max-w-xs md:max-w-sm lg:max-w-md mx-2">
+                <h3 id="modal-title" class="text-2xl md:text-3xl font-extrabold mb-3 md:mb-4 text-[#4f46e5]"></h3>
+                <p id="modal-message" class="text-gray-700 mb-4 md:mb-6 text-base md:text-lg"></p>
+                <!-- Κουμπί για εμφάνιση φράσης στην ήττα -->
+                <button id="reveal-phrase-btn" class="px-4 py-2 md:px-6 md:py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition mb-3 md:mb-4 hidden text-sm md:text-base">
+                    Θέλεις να δεις το κρυπτόλεξο;
+                </button>
+                <div id="revealed-phrase" class="hidden mt-3 md:mt-4 p-3 md:p-4 bg-gray-100 rounded-lg">
+                    <p class="font-bold text-base md:text-lg text-gray-900"></p>
+                </div>
+                <!-- Κουμπιά για συνέχεια μετά τη νίκη -->
+                <div id="continue-buttons" class="hidden space-y-3 md:space-y-4">
+                    <p class="text-base md:text-lg font-semibold text-gray-700">Θέλεις να συνεχίσεις;</p>
+                    <div class="flex justify-center space-x-3 md:space-x-4">
+                        <button id="continue-yes" class="px-4 py-2 md:px-6 md:py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition text-sm md:text-base">Ναι</button>
+                        <button id="continue-no" class="px-4 py-2 md:px-6 md:py-2 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-700 transition text-sm md:text-base">Όχι</button>
+                    </div>
+                </div>
+                <!-- Κουμπιά για το τρίτο επίπεδο -->
+                <div id="final-buttons" class="hidden space-y-3 md:space-y-4">
+                    <p class="text-base md:text-lg font-semibold text-gray-700">Συγχαρητήρια! Θέλεις να πάμε σε κρυπτόλεξα με διαφορετικό θέμα?</p>
+                    <div class="flex justify-center space-x-3 md:space-x-4">
+                        <button id="final-yes" class="px-4 py-2 md:px-6 md:py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition text-sm md:text-base">Ναι</button>
+                        <button id="final-no" class="px-4 py-2 md:px-6 md:py-2 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-700 transition text-sm md:text-base">Όχι</button>
+                    </div>
+                </div>
+                <!-- Κουμπί για επανεκκίνηση -->
+                <button id="modal-button" class="px-4 py-2 md:px-6 md:py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition hidden text-sm md:text-base">Παίξε Ξανά</button>
+            </div>
         </div>
     </div>
 
@@ -491,8 +513,11 @@
         // --- Game State ---
         let gameState = {};
         let solvedPhrases = []; // Αποθηκεύει τις λυμένες φράσεις
-        
+        let introTimeouts = []; // Για να διαχειριζόμαστε τα timeouts της intro
+
         // --- DOM Elements ---
+        const introPage = document.getElementById('intro-page');
+        const gameContainer = document.getElementById('game-container');
         const phraseContainer = document.getElementById('hidden-phrase-container');
         const letterButtonsContainer = document.getElementById('letter-buttons');
         const incorrectGuessesSpan = document.getElementById('incorrect-guesses');
@@ -518,6 +543,59 @@
         const puzzleImage = document.getElementById('puzzle-image');
         const solvedPhrasesContainer = document.getElementById('solved-phrases-container');
         const emptyPuzzleSpace = document.getElementById('empty-puzzle-space');
+        const skipIntroButton = document.getElementById('skip-intro');
+
+        // --- Intro Functions ---
+        function startIntro() {
+            const titles = [
+                'intro-title-1',
+                'intro-title-2', 
+                'intro-title-3',
+                'intro-title-4',
+                'intro-title-5'
+            ];
+
+            let delay = 0;
+            
+            titles.forEach((titleId, index) => {
+                // Fade in μετά από delay
+                introTimeouts.push(setTimeout(() => {
+                    const element = document.getElementById(titleId);
+                    element.classList.add('fade-in');
+                }, delay));
+
+                // Προσθήκη delay για το επόμενο element
+                delay += 2500; // 1.5s fade in + 1s delay
+                
+                // Για το τελευταίο element, περιμένουμε 2sec και μετά fade out
+                if (index === titles.length - 1) {
+                    introTimeouts.push(setTimeout(() => {
+                        // Fade out όλης της intro
+                        introPage.classList.add('fade-out');
+                        
+                        // Μετά το fade out, εμφάνιση του παιχνιδιού
+                        setTimeout(() => {
+                            introPage.style.display = 'none';
+                            gameContainer.classList.remove('hidden');
+                            resetGame(0);
+                        }, 1000);
+                    }, delay + 2000));
+                }
+            });
+        }
+
+        function skipIntro() {
+            // Καθαρισμός όλων των timeouts
+            introTimeouts.forEach(timeout => clearTimeout(timeout));
+            
+            // Αμέσως fade out και μετάβαση στο παιχνίδι
+            introPage.classList.add('fade-out');
+            setTimeout(() => {
+                introPage.style.display = 'none';
+                gameContainer.classList.remove('hidden');
+                resetGame(0);
+            }, 500);
+        }
 
         // --- Utility Functions ---
 
@@ -673,16 +751,28 @@
                 button.textContent = letter;
                 
                 if (!gameState.gameActive) {
+                    // Game over state - όλα τα κουμπιά απενεργοποιημένα
                     button.disabled = true;
-                    button.classList.add(gameState.correctGuesses.has(letter) ? 'btn-used-correct' : 'btn-used-wrong');
-                } else if (gameState.guessedLetters.has(letter)) {
+                    if (gameState.correctGuesses.has(letter)) {
+                        button.classList.add('btn-used-correct');
+                    } else {
+                        button.classList.add('btn-used-wrong');
+                    }
+                } else if (gameState.correctGuesses.has(letter)) {
+                    // Σωστά χρησιμοποιημένα γράμματα - απενεργοποιημένα
                     button.disabled = true;
-                    const isCorrect = gameState.correctGuesses.has(letter);
-                    button.classList.add(isCorrect ? 'btn-used-correct' : 'btn-used-wrong');
+                    button.classList.add('btn-used-correct');
+                } else if (gameState.wronglyPlacedLetters.has(letter)) {
+                    // Λάθος τοποθετημένα γράμματα - ενεργά αλλά με διαφορετικό χρώμα
+                    button.disabled = false;
+                    button.classList.add('btn-used-wrong-active');
+                    button.onclick = () => handleGuess(letter);
                 } else if (gameState.phase === 'main_game' && gameState.selectedLetter === letter) {
+                    // Επιλεγμένο γράμμα
                     button.disabled = true;
                     button.classList.add('btn-selected');
                 } else {
+                    // Διαθέσιμα γράμματα
                     button.disabled = false;
                     button.classList.add('btn-available');
                     button.onclick = () => handleGuess(letter);
@@ -698,17 +788,23 @@
                 currentPhaseText.textContent = `Αρχική Αποκάλυψη. Επιλέξτε ${gameState.initialRevealsLeft} γράμματα. (Δεν μετρούν ως λάθη)`;
                 phaseIndicator.classList.replace('bg-yellow-100', 'bg-blue-100');
                 phaseIndicator.classList.replace('border-yellow-300', 'border-blue-300');
-                selectionDisplay.classList.add('hidden');
+                
+                // Αόρατο το selection display στην αρχική φάση
+                selectionDisplay.classList.remove('visible');
+                selectionDisplay.classList.add('invisible');
             } else {
                 currentPhaseText.textContent = 'Κύρια Φάση Παιχνιδιού. Επιλέξτε γράμμα και θέση.';
                 phaseIndicator.classList.replace('bg-blue-100', 'bg-yellow-100');
                 phaseIndicator.classList.replace('border-blue-300', 'border-yellow-300');
                 
+                // Εμφάνιση ή απόκρυψη του selection display ανάλογα με την επιλογή γράμματος
                 if (gameState.selectedLetter) {
-                    selectionDisplay.classList.remove('hidden');
+                    selectionDisplay.classList.remove('invisible');
+                    selectionDisplay.classList.add('visible');
                     selectedLetterText.textContent = gameState.selectedLetter;
                 } else {
-                    selectionDisplay.classList.add('hidden');
+                    selectionDisplay.classList.remove('visible');
+                    selectionDisplay.classList.add('invisible');
                     selectedLetterText.textContent = 'Κανένα';
                 }
             }
@@ -764,6 +860,8 @@
                     modalMessage.textContent += ' Ολοκλήρωσες όλα τα κρυπτόλεξα!';
                     modalButton.classList.remove('hidden');
                     modalButton.textContent = 'Παίξε Ξανά';
+                    // Στην περίπτωση νίκης, επανεκκίνηση από το πρώτο κρυπτόλεξο
+                    modalButton.onclick = () => resetGame(0);
                     gameModal.classList.remove('hidden');
                     gameModal.classList.add('flex');
                 }
@@ -773,6 +871,8 @@
                 revealPhraseBtn.classList.remove('hidden');
                 modalButton.classList.remove('hidden');
                 modalButton.textContent = 'Παίξε Ξανά';
+                // Στην περίπτωση ήττας, επανεκκίνηση από το ΤΡΕΧΟΝ κρυπτόλεξο
+                modalButton.onclick = () => resetGame(gameState.currentPuzzleIndex);
                 gameModal.classList.remove('hidden');
                 gameModal.classList.add('flex');
             }
@@ -806,6 +906,8 @@
             gameState.wordsToGuess = newWordsToGuess;
             gameState.guessedLetters.add(letter);
             gameState.correctGuesses.add(letter);
+            // Αφαίρεση από τα wronglyPlacedLetters αν υπάρχει
+            gameState.wronglyPlacedLetters.delete(letter);
             
             return wordsToGuessUpdated;
         }
@@ -855,15 +957,20 @@
             const guessedLetter = gameState.selectedLetter;
             const actualLetter = gameState.normalizedMessage[index];
 
+            // 1. Ελέγχουμε αν το γράμμα που επέλεξε ο παίκτης αντιστοιχεί στη θέση.
             if (guessedLetter === actualLetter) {
+                // Σωστή θέση: Αποκαλύπτουμε το γράμμα παντού
                 revealLetter(guessedLetter);
             } else {
+                // Λάθος θέση: Μετράμε λάθος και προσθέτουμε στα wronglyPlacedLetters
                 gameState.incorrectGuesses++;
-                gameState.guessedLetters.add(guessedLetter);
+                gameState.wronglyPlacedLetters.add(guessedLetter);
             }
             
+            // 2. Ολοκλήρωση κίνησης
             gameState.selectedLetter = null;
             
+            // 3. Ενημέρωση UI/Game State
             checkGameStatus();
             renderPhrase(); 
             renderLetters(); 
@@ -872,21 +979,27 @@
         }
 
         async function checkGameStatus() {
+            // 1. Check for Loss
             if (gameState.incorrectGuesses >= MAX_INCORRECT_GUESSES) {
                 gameState.gameActive = false;
+                // ΔΕΝ αποκαλύπτουμε τη φράση αμέσως - ο παίκτης πρέπει να ζητήσει να τη δει
                 renderPhrase();
                 setTimeout(() => showModal(false), 500);
                 return;
             }
             
+            // 2. Check for Win (Words to guess is empty)
             if (gameState.wordsToGuess.length === 0) {
                 gameState.gameActive = false;
                 
+                // Κάνουμε την κίνηση συλλογής και περιμένουμε να ολοκληρωθεί
                 const solvedElement = await collectPhraseAnimation();
                 
+                // Κάνουμε scroll στο λυμένο κρυπτόλεξο
                 setTimeout(() => {
                     scrollToElement(solvedElement);
                     
+                    // Εμφανίζουμε το modal μετά το scroll
                     setTimeout(() => {
                         showModal(true);
                     }, 1000);
@@ -894,6 +1007,8 @@
                 
                 return;
             }
+            
+            // 3. Game is still active
         }
 
         function resetGame(puzzleIndex = 0) {
@@ -922,6 +1037,7 @@
                 wordsToGuess: lettersToGuess, 
                 guessedLetters: new Set(), 
                 correctGuesses: new Set(),
+                wronglyPlacedLetters: new Set(), // Νέο Set για λάθος τοποθετημένα γράμματα
                 incorrectGuesses: 0,
                 gameActive: true,
                 currentPuzzleIndex: puzzleIndex,
@@ -955,7 +1071,11 @@
 
         // --- Initialization ---
         document.addEventListener('DOMContentLoaded', () => {
-            modalButton.onclick = () => resetGame(0);
+            // Event listeners για την intro
+            skipIntroButton.onclick = skipIntro;
+            
+            // Event listeners για το παιχνίδι
+            modalButton.onclick = () => resetGame(0); // Default behavior
             
             revealPhraseBtn.onclick = () => {
                 revealedPhraseText.textContent = gameState.rawMessage;
@@ -976,6 +1096,8 @@
                 continueButtons.classList.add('hidden');
                 modalButton.classList.remove('hidden');
                 modalButton.textContent = 'Παίξε Ξανά';
+                // Επανεκκίνηση από το πρώτο κρυπτόλεξο
+                modalButton.onclick = () => resetGame(0);
             };
 
             finalYes.onclick = () => {
@@ -990,9 +1112,12 @@
                 finalButtons.classList.add('hidden');
                 modalButton.classList.remove('hidden');
                 modalButton.textContent = 'Παίξε Ξανά';
+                // Επανεκκίνηση από το πρώτο κρυπτόλεξο
+                modalButton.onclick = () => resetGame(0);
             };
             
-            resetGame(0);
+            // Έναρξη της intro
+            startIntro();
         });
     </script>
 </body>
