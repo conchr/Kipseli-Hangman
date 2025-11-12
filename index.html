@@ -71,7 +71,7 @@
             font-size: 2rem;
             font-weight: bold;
             color: white;
-            margin-bottom: 1.5rem;
+            margin-bottom: 0.5rem;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
             opacity: 0;
             transition: opacity 1.5s ease-in-out;
@@ -86,12 +86,26 @@
             transition: opacity 1.5s ease-in-out;
         }
 
+        /* Νέο στυλ για τον υπότιτλο */
+        .intro-subtitle-small {
+            font-size: 1.1rem;
+            color: #e5e7eb;
+            margin-bottom: 1.5rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            font-style: italic;
+        }
+
         @media (min-width: 768px) {
             .intro-title {
                 font-size: 3rem;
             }
             .intro-subtitle {
                 font-size: 1.5rem;
+            }
+            .intro-subtitle-small {
+                font-size: 1.3rem;
             }
         }
 
@@ -405,6 +419,21 @@
         .hidden {
             display: none !important;
         }
+
+        /* Νέο στυλ για υπότιτλο στην κύρια σελίδα */
+        .game-subtitle {
+            color: #6b7280;
+            font-size: 1.1rem;
+            font-style: italic;
+            margin-top: -0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .game-subtitle {
+                font-size: 1.2rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -412,6 +441,7 @@
     <div id="intro-page" class="intro-page">
         <div class="intro-content">
             <h1 id="intro-title-1" class="intro-title">Μάθε τα Μυστικά της ζωής στο Κάστρο Καλλιθέας</h1>
+            <p id="intro-subtitle-small-1" class="intro-subtitle-small">Πήλινη Κυψέλη - Μυλόπετρα</p>
             <p id="intro-title-2" class="intro-subtitle">Ανακάλυψε τη φράση, διάλεξε πρώτα 5 γράμματα</p>
             <p id="intro-title-3" class="intro-subtitle">Επιλέγεις πρώτα ένα γράμμα, και μετά την θέση που ταιριάζει στο κρυπτόλεξο</p>
             <p id="intro-title-4" class="intro-subtitle">Πρόσεξε, μπορείς να κάνεις μέχρι 3 λάθη!</p>
@@ -425,6 +455,7 @@
         <div class="card space-y-4 md:space-y-6">
             <header class="text-center border-b pb-3 md:pb-4">
                 <h1 class="text-xl md:text-2xl lg:text-3xl font-extrabold text-[#4f46e5]">Μάθε τα Μυστικά της ζωής στο Κάστρο Καλλιθέας</h1>
+                <p class="game-subtitle">Πήλινη Κυψέλη - Μυλόπετρα</p>
                 <p class="text-gray-600 mt-1 text-sm md:text-base">Βρες τα γράμματα της κρυμμένης φράσης! Επιτρέπονται 3 λάθη.</p>
             </header>
 
@@ -542,6 +573,7 @@
     <div id="end-page" class="intro-page hidden">
         <div class="intro-content">
             <h1 id="end-title-1" class="intro-title">Μάθε τα Μυστικά της ζωής στο Κάστρο Καλλιθέας</h1>
+            <p id="end-subtitle-small-1" class="intro-subtitle-small">Πήλινη Κυψέλη - Μυλόπετρα</p>
             <div id="end-phrases-container" class="w-full max-w-4xl">
                 <!-- Τα κρυπτόλεξα θα προστεθούν δυναμικά εδώ -->
             </div>
@@ -619,6 +651,7 @@
         const endPage = document.getElementById('end-page');
         const endPhrasesContainer = document.getElementById('end-phrases-container');
         const endTitle1 = document.getElementById('end-title-1');
+        const endSubtitleSmall1 = document.getElementById('end-subtitle-small-1');
         const endThankYou = document.getElementById('end-thank-you');
         const endPlayAgain = document.getElementById('end-play-again');
 
@@ -632,6 +665,7 @@
         function startIntro() {
             const titles = [
                 'intro-title-1',
+                'intro-subtitle-small-1', // Προσθήκη του υπότιτλου
                 'intro-title-2', 
                 'intro-title-3',
                 'intro-title-4',
@@ -828,10 +862,12 @@
             // Καθαρισμός προηγούμενου περιεχομένου
             endPhrasesContainer.innerHTML = '';
 
-            // Προσθήκη του τίτλου
+            // Προσθήκη του τίτλου και του υπότιτλου
             endTitle1.classList.remove('fade-in');
+            endSubtitleSmall1.classList.remove('fade-in');
             setTimeout(() => {
                 endTitle1.classList.add('fade-in');
+                endSubtitleSmall1.classList.add('fade-in');
             }, 100);
 
             // Προσθήκη των κρυπτόλεξων με animation
