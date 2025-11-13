@@ -558,8 +558,8 @@
                         <button id="continue-next" class="px-4 py-2 md:px-6 md:py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition text-sm md:text-base">
                             Συνέχισε στο Επόμενο
                         </button>
-                        <button id="show-end" class="px-4 py-2 md:px-6 md:py-2 bg-purple-600 text-white font-semibold rounded-lg shadow-md hover:bg-purple-700 transition text-sm md:text-base">
-                            Τέλος Παιχνιδιού
+                        <button id="home-button" class="px-4 py-2 md:px-6 md:py-2 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700 transition text-sm md:text-base">
+                            Αρχική Σελίδα
                         </button>
                     </div>
                 </div>
@@ -579,6 +579,7 @@
             </div>
             <p id="end-thank-you" class="intro-subtitle mt-8">Ευχαριστούμε που έπαιξες</p>
         </div>
+        <button id="end-home-button" class="skip-button" style="left: 2rem; right: auto;">Αρχική Σελίδα</button>
         <button id="end-play-again" class="skip-button">Παίξε Ξανά</button>
     </div>
 
@@ -654,12 +655,13 @@
         const endSubtitleSmall1 = document.getElementById('end-subtitle-small-1');
         const endThankYou = document.getElementById('end-thank-you');
         const endPlayAgain = document.getElementById('end-play-again');
+        const endHomeButton = document.getElementById('end-home-button');
 
         // Νέα DOM Elements για τα κουμπιά στην ήττα
         const loseButtons = document.getElementById('lose-buttons');
         const playSameAgain = document.getElementById('play-same-again');
         const continueNext = document.getElementById('continue-next');
-        const showEnd = document.getElementById('show-end');
+        const homeButton = document.getElementById('home-button');
 
         // --- Intro Functions ---
         function startIntro() {
@@ -1094,22 +1096,18 @@
                         continueButtons.classList.remove('hidden');
                     }, 3000);
                 } 
-                // Για το τρίτο κρυπτόλεξο, εμφάνιση αμέσως με το νέο μήνυμα
+                // Για το τρίτο κρυπτόλεξο - αυτόματη μετάβαση μετά από 3 δευτερόλεπτα
                 else if (gameState.currentPuzzleIndex === 2) {
                     setTimeout(() => {
                         gameModal.classList.remove('hidden');
                         gameModal.classList.add('flex');
-                        finalButtons.classList.remove('hidden');
+                        // Μόνο το μήνυμα, χωρίς κουμπιά
+                        
+                        // Μετά από 3 δευτερόλεπτα, πήγαινε αυτόματα στην τελική σελίδα
+                        setTimeout(() => {
+                            showEndPage();
+                        }, 3000);
                     }, 1000);
-                }
-                else {
-                    modalMessage.textContent += ' Ολοκλήρωσες όλα τα κρυπτόλεξα!';
-                    modalButton.classList.remove('hidden');
-                    modalButton.textContent = 'Παίξε Ξανά';
-                    // Στην περίπτωση νίκης, επανεκκίνηση από το πρώτο κρυπτόλεξο
-                    modalButton.onclick = () => resetGame(0);
-                    gameModal.classList.remove('hidden');
-                    gameModal.classList.add('flex');
                 }
             } else {
                 modalTitle.textContent = 'Τέλος Παιχνιδιού! Ήττα!';
@@ -1342,7 +1340,7 @@
             };
             
             continueNo.onclick = () => {
-                showEndPage();
+                window.location.href = "https://conchr.github.io/Games/";
             };
 
             finalYes.onclick = () => {
@@ -1352,7 +1350,7 @@
             };
 
             finalNo.onclick = () => {
-                showEndPage();
+                window.location.href = "https://conchr.github.io/Games/";
             };
 
             // Event listeners για τα νέα κουμπιά στην ήττα
@@ -1369,13 +1367,18 @@
                 }
             };
 
-            showEnd.onclick = () => {
-                showEndPage();
+            homeButton.onclick = () => {
+                window.location.href = "https://conchr.github.io/Games/";
             };
 
             // Event listener για το κουμπί "Παίξε Ξανά" στην οθόνη τέλους
             endPlayAgain.onclick = () => {
                 resetGame(0);
+            };
+
+            // Event listener για το κουμπί "Αρχική Σελίδα" στην οθόνη τέλους
+            endHomeButton.onclick = () => {
+                window.location.href = "https://conchr.github.io/Games/";
             };
             
             // Έναρξη της intro
